@@ -115,6 +115,9 @@ public final class Lexer {
         clearBuffer();
         char current = peek(0);
         while (true) {
+            if (Character.isLetter(current)) {
+                throw error("Variable starts with number");
+            }
             if (!Character.isDigit(current)) {
                 break;
             }
