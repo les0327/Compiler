@@ -1,53 +1,267 @@
 package parser;
 
+import exceptions.SyntaxException;
+import parser.ast.DataType;
+import parser.ast.Variables;
 import parser.ast.expression.*;
-import parser.ast.statement.AssignmentStatement;
-import parser.ast.statement.Statement;
+import parser.ast.statement.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public final class Parser {
 
-    private static final Token EOF = new Token(TokenType.EOF, "");
-
+    private static final Token EOF = new Token(TokenType.EOF, "", -1, -1);
     private final List<Token> tokens;
     private final int size;
-
     private int pos;
 
-    public Parser(List<Token> tokens) {
+    private Parser(List<Token> tokens) {
         this.tokens = tokens;
         size = tokens.size();
     }
 
-    public List<Statement> parse() {
-        final List<Statement> result = new ArrayList<>();
+    public static Statement parse(List<Token> tokens) {
+        return new Parser(tokens).parse();
+    }
+
+    private Statement parse() {
+        final BlockStatement result = new BlockStatement();
         while (!match(TokenType.EOF)) {
             result.add(statement());
         }
         return result;
     }
 
+    private Statement statementOrBlock() {
+        if (lookMatch(0, TokenType.LEFT_BRACE)) return block();
+        return statement();
+    }
+
     private Statement statement() {
+        if (match(TokenType.IF)) {
+            return ifElse();
+        }
+        if (match(TokenType.INT)) {
+            return defineIntStatement();
+        }
+        if (match(TokenType.BOOL)) {
+            return defineBoolStatement();
+        }
+
         return assignmentStatement();
     }
 
-    private Statement assignmentStatement() {
-        // WORD EQ
-        final Token current = get(0);
-        if (match(TokenType.VAR) && get(0).getType() == TokenType.ASSIGN) {
-            final String variable = current.getText();
-            consume(TokenType.ASSIGN);
-            return new AssignmentStatement(variable, expression());
+    private Statement block() {
+        final BlockStatement block = new BlockStatement();
+        consume(TokenType.LEFT_BRACE);
+        while (!match(TokenType.RIGHT_BRACE)) {
+            block.add(statement());
         }
-        throw new RuntimeException("Unknown statement");
+        return block;
     }
 
+    private Statement assignmentStatement() {
+        if (lookMatch(0, TokenType.VAR) && lookMatch(1, TokenType.ASSIGN)) {
+            final String variable = consume(TokenType.VAR).getText();
+            consume(TokenType.ASSIGN);
+            Statement s = new AssignmentStatement(variable, expression());
+            Variables.assign(variable);
+            match(TokenType.SEMI_COLON);
+            return s;
+        }
+        throw new SyntaxException(get(0).getRow(), get(0).getCol(), "Unknown statement: " + get(0));
+    }
 
+    private Statement defineIntStatement() {
+        if (lookMatch(0, TokenType.VAR) && lookMatch(1, TokenType.SEMI_COLON)) {
+            String variable = consume(TokenType.VAR).getText();
+            consume(TokenType.SEMI_COLON);
+            return new DefineStatement(Variables.define(variable, DataType.Int), null);
+        }
+
+        if (lookMatch(0, TokenType.VAR) && lookMatch(1, TokenType.ASSIGN)) {
+            String variable = consume(TokenType.VAR).getText();
+            consume(TokenType.ASSIGN);
+            Statement s = new DefineStatement(Variables.define(variable, DataType.Int), expression());
+            Variables.assign(variable);
+            match(TokenType.SEMI_COLON);
+            return s;
+        }
+        throw new SyntaxException(get(0).getRow(), get(0).getCol(), "Unknown statement: " + get(0));
+    }
+
+    private Statement defineBoolStatement() {
+        if (lookMatch(0, TokenType.VAR) && lookMatch(1, TokenType.SEMI_COLON)) {
+            String variable = consume(TokenType.VAR).getText();
+            consume(TokenType.SEMI_COLON);
+            return new DefineStatement(Variables.define(variable, DataType.Bool), null);
+        }
+        if (lookMatch(0, TokenType.VAR) && lookMatch(1, TokenType.ASSIGN)) {
+            String variable = consume(TokenType.VAR).getText();
+            consume(TokenType.ASSIGN);
+            Statement s = new DefineStatement(Variables.define(variable, DataType.Bool), expression());
+            match(TokenType.SEMI_COLON);
+            return s;
+        }
+        throw new SyntaxException(get(0).getRow(), get(0).getCol(), "Unknown statement: " + get(0));
+    }
+
+    private Statement ifElse() {
+        final Expression condition = expression();
+        final Statement ifStatement = statementOrBlock();
+        final Statement elseStatement;
+        if (match(TokenType.ELSE)) {
+            elseStatement = statementOrBlock();
+        } else {
+            elseStatement = null;
+        }
+        return new IfStatement(condition, ifStatement, elseStatement);
+    }
 
     private Expression expression() {
-        return additive();
+        return ternary();
+    }
+
+    private Expression ternary() {
+        Expression result = logicalOr();
+
+        if (match(TokenType.QUESTION)) {
+            final Expression trueExpr = expression();
+            consume(TokenType.COLON);
+            final Expression falseExpr = expression();
+            Expression e = new TernaryExpression(result, trueExpr, falseExpr);
+            match(TokenType.SEMI_COLON);
+            return e;
+        }
+
+        return result;
+    }
+
+    private Expression logicalOr() {
+        Expression result = logicalAnd();
+
+        while (true) {
+            if (match(TokenType.OR_LOGICAL)) {
+                result = new ConditionalExpression(ConditionalExpression.Operator.OR, result, logicalAnd());
+                continue;
+            }
+            break;
+        }
+
+        return result;
+    }
+
+    private Expression logicalAnd() {
+        Expression result = bitwiseOr();
+
+        while (true) {
+            if (match(TokenType.AND_LOGICAL)) {
+                result = new ConditionalExpression(ConditionalExpression.Operator.AND, result, bitwiseOr());
+                continue;
+            }
+            break;
+        }
+
+        return result;
+    }
+
+    private Expression bitwiseOr() {
+        Expression expression = bitwiseXor();
+
+        while (true) {
+            if (match(TokenType.OR)) {
+                expression = new BinaryExpression(BinaryExpression.Operator.OR, expression, bitwiseXor());
+                continue;
+            }
+            break;
+        }
+
+        return expression;
+    }
+
+    private Expression bitwiseXor() {
+        Expression expression = bitwiseAnd();
+
+        while (true) {
+            if (match(TokenType.XOR)) {
+                expression = new BinaryExpression(BinaryExpression.Operator.XOR, expression, bitwiseAnd());
+                continue;
+            }
+            break;
+        }
+
+        return expression;
+    }
+
+    private Expression bitwiseAnd() {
+        Expression expression = equality();
+
+        while (true) {
+            if (match(TokenType.AND)) {
+                expression = new BinaryExpression(BinaryExpression.Operator.AND, expression, equality());
+                continue;
+            }
+            break;
+        }
+
+        return expression;
+    }
+
+    private Expression equality() {
+        Expression result = conditional();
+
+        if (match(TokenType.EQUALS)) {
+            return new ConditionalExpression(ConditionalExpression.Operator.EQUALS, result, conditional());
+        }
+        if (match(TokenType.NOT_EQUALS)) {
+            return new ConditionalExpression(ConditionalExpression.Operator.NOT_EQUALS, result, conditional());
+        }
+
+        return result;
+    }
+
+    private Expression conditional() {
+        Expression result = shift();
+
+        while (true) {
+            if (match(TokenType.LESS)) {
+                result = new ConditionalExpression(ConditionalExpression.Operator.LT, result, shift());
+                continue;
+            }
+            if (match(TokenType.LESS_EQUALS)) {
+                result = new ConditionalExpression(ConditionalExpression.Operator.LTEQ, result, shift());
+                continue;
+            }
+            if (match(TokenType.MORE)) {
+                result = new ConditionalExpression(ConditionalExpression.Operator.GT, result, shift());
+                continue;
+            }
+            if (match(TokenType.MORE_EQUALS)) {
+                result = new ConditionalExpression(ConditionalExpression.Operator.GTEQ, result, shift());
+                continue;
+            }
+            break;
+        }
+
+        return result;
+    }
+
+    private Expression shift() {
+        Expression expression = additive();
+
+        while (true) {
+            if (match(TokenType.LEFT_SHIFT)) {
+                expression = new BinaryExpression(BinaryExpression.Operator.LSHIFT, expression, additive());
+                continue;
+            }
+            if (match(TokenType.RIGHT_SHIFT)) {
+                expression = new BinaryExpression(BinaryExpression.Operator.RSHIFT, expression, additive());
+                continue;
+            }
+            break;
+        }
+
+        return expression;
     }
 
     private Expression additive() {
@@ -55,11 +269,11 @@ public final class Parser {
 
         while (true) {
             if (match(TokenType.PLUS)) {
-                result = new BinaryExpression('+', result, multiplicative());
+                result = new BinaryExpression(BinaryExpression.Operator.ADD, result, multiplicative());
                 continue;
             }
             if (match(TokenType.MINUS)) {
-                result = new BinaryExpression('-', result, multiplicative());
+                result = new BinaryExpression(BinaryExpression.Operator.SUBTRACT, result, multiplicative());
                 continue;
             }
             break;
@@ -73,11 +287,15 @@ public final class Parser {
 
         while (true) {
             if (match(TokenType.MUL)) {
-                result = new BinaryExpression('*', result, unary());
+                result = new BinaryExpression(BinaryExpression.Operator.MULTIPLY, result, unary());
                 continue;
             }
             if (match(TokenType.DIV)) {
-                result = new BinaryExpression('/', result, unary());
+                result = new BinaryExpression(BinaryExpression.Operator.DIVIDE, result, unary());
+                continue;
+            }
+            if (match(TokenType.PERCENT)) {
+                result = new BinaryExpression(BinaryExpression.Operator.REMAINDER, result, unary());
                 continue;
             }
             break;
@@ -88,7 +306,10 @@ public final class Parser {
 
     private Expression unary() {
         if (match(TokenType.MINUS)) {
-            return new UnaryExpression('-', primary());
+            return new UnaryExpression(UnaryExpression.Operator.NEGATE, primary());
+        }
+        if (match(TokenType.NOT)) {
+            return new UnaryExpression(UnaryExpression.Operator.NOT, primary());
         }
         if (match(TokenType.PLUS)) {
             return primary();
@@ -99,22 +320,23 @@ public final class Parser {
     private Expression primary() {
         final Token current = get(0);
         if (match(TokenType.NUMBER)) {
-            return new NumberExpression(Double.parseDouble(current.getText()));
+            return new NumberExpression(Integer.parseInt(current.getText()));
         }
         if (match(TokenType.VAR)) {
-            return new VariableExpression(current.getText());
+            return new VariableExpression(Variables.get(current.getText()));
         }
         if (match(TokenType.LEFT_ROUND_BRACKET)) {
             Expression result = expression();
             match(TokenType.RIGHT_ROUND_BRACKET);
             return result;
         }
-        throw new RuntimeException("Unknown expression");
+        throw new SyntaxException(current.getRow(), current.getCol(), "Unknown expression: " + current);
     }
 
     private Token consume(TokenType type) {
         final Token current = get(0);
-        if (type != current.getType()) throw new RuntimeException("Token " + current + " doesn't match " + type);
+        if (type != current.getType())
+            throw new SyntaxException(current.getRow(), current.getCol(), "Token " + current + " doesn't match " + type);
         pos++;
         return current;
     }
@@ -124,6 +346,10 @@ public final class Parser {
         if (type != current.getType()) return false;
         pos++;
         return true;
+    }
+
+    private boolean lookMatch(int pos, TokenType type) {
+        return get(pos).getType() == type;
     }
 
     private Token get(int relativePosition) {

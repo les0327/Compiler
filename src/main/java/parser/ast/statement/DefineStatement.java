@@ -2,13 +2,13 @@ package parser.ast.statement;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import parser.ast.Variable;
 import parser.ast.expression.Expression;
 
 @AllArgsConstructor
-public class AssignmentStatement implements Statement {
-
+public class DefineStatement implements Statement {
     @Getter
-    private String variable;
+    private Variable variable;
     @Getter
     private Expression expression;
 

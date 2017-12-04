@@ -1,20 +1,22 @@
 package parser.ast.expression;
 
-public final class NumberExpression implements Expression {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import parser.ast.DataType;
 
-    private final double value;
+@AllArgsConstructor
+public class NumberExpression implements Expression {
 
-    public NumberExpression(double value) {
-        this.value = value;
+    @Getter
+    private Number value;
+
+    @Override
+    public DataType returnType() {
+        return null;
     }
 
     @Override
-    public double eval() {
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return Double.toString(value);
+    public String toAsm() {
+        return toString();
     }
 }

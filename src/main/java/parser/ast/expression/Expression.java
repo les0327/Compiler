@@ -1,5 +1,9 @@
 package parser.ast.expression;
 
+import parser.ast.DataType;
+
 public interface Expression {
-    double eval();
+    DataType returnType();
+
+    String toAsm();
 }

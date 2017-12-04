@@ -2,7 +2,8 @@ package parser;
 
 
 public enum TokenType {
-
+    TRUE,
+    FALSE,
     NUMBER,
     VAR,
 
@@ -13,12 +14,14 @@ public enum TokenType {
     SWITCH,
     CASE,
     DEFAULT,
+
+    // types
     INT,
     BOOL,
 
     COLON, // :
     SEMI_COLON, // ;
-    
+
     PLUS, // +
     MINUS, // -
     MUL, // *
@@ -48,18 +51,18 @@ public enum TokenType {
 
     LEFT_SHIFT, // <<
     RIGHT_SHIFT, // >>
-    
-    TILDE, // ~
+
     XOR, // ^
     OR, // |
     OR_LOGICAL, // ||
     AND, // &
     AND_LOGICAL, // &&
+    QUESTION, // ?
 
     LEFT_ROUND_BRACKET, // (
     RIGHT_ROUND_BRACKET, // )
     LEFT_BRACE, // {
     RIGHT_BRACE, // }
-    
+
     EOF
 }

@@ -9,14 +9,11 @@ import java.util.Map;
 
 
 public final class Lexer {
-    
-    public static List<Token> tokenize(String input) {
-        return new Lexer(input).tokenize();
-    }
-    
+
     private static final String OPERATOR_CHARS = "+-*/%(){}=<>!&|^~:;";
-    
     private static final Map<String, TokenType> OPERATORS;
+    private static final Map<String, TokenType> KEYWORDS;
+
     static {
         OPERATORS = new HashMap<>();
         OPERATORS.put("+", TokenType.PLUS);
@@ -32,19 +29,18 @@ public final class Lexer {
         OPERATORS.put("<", TokenType.LESS);
         OPERATORS.put(">", TokenType.MORE);
         OPERATORS.put("^", TokenType.XOR);
-        OPERATORS.put("~", TokenType.TILDE);
         OPERATORS.put(":", TokenType.COLON);
         OPERATORS.put(";", TokenType.SEMI_COLON);
 
         OPERATORS.put("!", TokenType.NOT);
         OPERATORS.put("&", TokenType.AND);
         OPERATORS.put("|", TokenType.OR);
-        
+
         OPERATORS.put("==", TokenType.EQUALS);
         OPERATORS.put("!=", TokenType.NOT_EQUALS);
         OPERATORS.put("<=", TokenType.LESS_EQUALS);
         OPERATORS.put(">=", TokenType.MORE_EQUALS);
-        
+
         OPERATORS.put("+=", TokenType.PLUS_EQUALS);
         OPERATORS.put("-=", TokenType.MINUS_EQUALS);
         OPERATORS.put("*=", TokenType.MUL_EQUALS);
@@ -57,15 +53,14 @@ public final class Lexer {
         OPERATORS.put("++", TokenType.INCREMENT);
         OPERATORS.put("--", TokenType.DECREMENT);
 
-        
+
         OPERATORS.put("&&", TokenType.AND_LOGICAL);
         OPERATORS.put("||", TokenType.OR_LOGICAL);
-        
+
         OPERATORS.put("<<", TokenType.LEFT_SHIFT);
         OPERATORS.put(">>", TokenType.RIGHT_SHIFT);
     }
-    
-    private static final Map<String, TokenType> KEYWORDS;
+
     static {
         KEYWORDS = new HashMap<>();
         KEYWORDS.put("if", TokenType.IF);
@@ -76,26 +71,30 @@ public final class Lexer {
         KEYWORDS.put("int", TokenType.INT);
         KEYWORDS.put("bool", TokenType.BOOL);
         KEYWORDS.put("default", TokenType.DEFAULT);
+        KEYWORDS.put("true", TokenType.TRUE);
+        KEYWORDS.put("false", TokenType.FALSE);
     }
 
     private final String input;
     private final int length;
-    
     private final List<Token> tokens;
     private final StringBuilder buffer;
-    
     private int pos;
     private int row, col;
 
     private Lexer(String input) {
         this.input = input;
         length = input.length();
-        
+
         tokens = new ArrayList<>();
         buffer = new StringBuilder();
         row = col = 1;
     }
-    
+
+    public static List<Token> tokenize(String input) {
+        return new Lexer(input).tokenize();
+    }
+
     private List<Token> tokenize() {
         while (pos < length) {
             final char current = peek(0);
@@ -110,7 +109,7 @@ public final class Lexer {
         }
         return tokens;
     }
-    
+
     private void tokenizeNumber() {
         clearBuffer();
         char current = peek(0);
@@ -127,7 +126,6 @@ public final class Lexer {
         addToken(TokenType.NUMBER, buffer.toString());
     }
 
-    
     private void tokenizeOperator() {
         char current = peek(0);
         if (current == '/') {
@@ -154,7 +152,7 @@ public final class Lexer {
             current = next();
         }
     }
-    
+
     private void tokenizeWord() {
         clearBuffer();
         buffer.append(peek(0));
@@ -166,19 +164,18 @@ public final class Lexer {
             buffer.append(current);
             current = next();
         }
-        
+
         final String word = buffer.toString();
         addToken(KEYWORDS.getOrDefault(word, TokenType.VAR), word);
     }
 
-    
     private void tokenizeOneLineComment() {
         char current = peek(0);
         while ("\r\n\0".indexOf(current) == -1) {
             current = next();
         }
-     }
-    
+    }
+
     private void tokenizeMultilineComment() {
         char current = peek(0);
         while (true) {
@@ -197,11 +194,11 @@ public final class Lexer {
     private boolean isIdentifierPart(char current) {
         return Character.isLetterOrDigit(current);
     }
-    
+
     private void clearBuffer() {
         buffer.setLength(0);
     }
-    
+
     private char next() {
         pos++;
         final char result = peek(0);
@@ -211,7 +208,7 @@ public final class Lexer {
         } else col++;
         return result;
     }
-    
+
     private char peek(int relativePosition) {
         final int position = pos + relativePosition;
         if (position >= length) return '\0';
@@ -221,7 +218,7 @@ public final class Lexer {
     private void addToken(TokenType type, String text) {
         tokens.add(new Token(type, text, row, col - text.length()));
     }
-    
+
     private LexerException error(String text) {
         return new LexerException(row, col, text);
     }

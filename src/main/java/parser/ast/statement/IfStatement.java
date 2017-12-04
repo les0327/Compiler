@@ -5,12 +5,13 @@ import lombok.Getter;
 import parser.ast.expression.Expression;
 
 @AllArgsConstructor
-public class AssignmentStatement implements Statement {
+public class IfStatement implements Statement {
 
     @Getter
-    private String variable;
-    @Getter
     private Expression expression;
+    @Getter
+    private Statement ifStatement, elseStatement;
+
 
     @Override
     public void semanticAnalyse() {
@@ -21,4 +22,5 @@ public class AssignmentStatement implements Statement {
     public String toAsm() {
         return null;
     }
+
 }

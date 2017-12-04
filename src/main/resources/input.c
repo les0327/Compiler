@@ -1,26 +1,9 @@
-int a = 0;
-int b = -3;
-int c = 0;
-int d = 0;
 
-if (a != b) {
-    c = 3;
-} else if (a != (6 | 2)) {
-    d = 5;
+
+if (1 > 2) {
+    b = 3 + b;
+    b = 26 + 13;
 } else {
-    b += 23;
+    b = 5;
+    b = 22 + 14;
 }
-
-switch (b) {
-    case 0:
-        a += 12;
-        break;
-    default:
-        a -= b + c * (d + 12);
-}
-
-/*
-aasda
-asdsad
-asdasd
-*/
