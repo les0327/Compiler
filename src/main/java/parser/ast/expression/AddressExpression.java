@@ -6,7 +6,7 @@ import parser.ast.DataType;
 import parser.ast.Variable;
 
 @AllArgsConstructor
-public class AddressExpression implements Expression{
+public class AddressExpression implements Expression {
     @Getter
     private Variable address;
 

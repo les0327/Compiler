@@ -85,73 +85,73 @@ public class BinaryExpression implements Expression {
         if (expr1.isTerminal() && expr2.isTerminal()) {
             switch (operation) {
                 case ADD:
-                    return "MOV eax, "+ expr1.toAsm() +"\nMOV ebx, "+ expr2.toAsm() +"\nADD eax, ebx\npush eax\n";
+                    return "MOV eax, " + expr1.toAsm() + "\nMOV ebx, " + expr2.toAsm() + "\nADD eax, ebx\npush eax\n";
                 case SUBTRACT:
-                    return "MOV eax, "+ expr1.toAsm() +"\nMOV ebx, "+ expr2.toAsm() +"\nSUB eax, ebx\npush eax\n";
+                    return "MOV eax, " + expr1.toAsm() + "\nMOV ebx, " + expr2.toAsm() + "\nSUB eax, ebx\npush eax\n";
                 case MULTIPLY:
-                    return "MOV eax, "+ expr1.toAsm() +"\nMOV ebx, "+ expr2.toAsm() +"\nMUL ebx\npush eax\n";
+                    return "MOV eax, " + expr1.toAsm() + "\nMOV ebx, " + expr2.toAsm() + "\nMUL ebx\npush eax\n";
                 case DIVIDE:
-                    return "MOV eax, "+ expr1.toAsm() +"\nMOV ebx, "+ expr2.toAsm() +"\nXOR edx, edx\nDIV ebx\npush eax\n";
+                    return "MOV eax, " + expr1.toAsm() + "\nMOV ebx, " + expr2.toAsm() + "\nXOR edx, edx\nDIV ebx\npush eax\n";
                 case REMAINDER:
-                    return "MOV eax, "+ expr1.toAsm() +"\nMOV ebx, "+ expr2.toAsm() +"\nXOR edx, edx\nDIV ebx\npush edx\n";
+                    return "MOV eax, " + expr1.toAsm() + "\nMOV ebx, " + expr2.toAsm() + "\nXOR edx, edx\nDIV ebx\npush edx\n";
                 case OR:
-                    return "MOV eax, "+ expr1.toAsm() +"\nMOV ebx, "+ expr2.toAsm() +"\nOR  eax, ebx\npush eax\n";
+                    return "MOV eax, " + expr1.toAsm() + "\nMOV ebx, " + expr2.toAsm() + "\nOR  eax, ebx\npush eax\n";
                 case AND:
-                    return "MOV eax, "+ expr1.toAsm() +"\nMOV ebx, "+ expr2.toAsm() +"\nAND eax, ebx\npush eax\n";
+                    return "MOV eax, " + expr1.toAsm() + "\nMOV ebx, " + expr2.toAsm() + "\nAND eax, ebx\npush eax\n";
                 case XOR:
-                    return "MOV eax, "+ expr1.toAsm() +"\nMOV ebx, "+ expr2.toAsm() +"\nXOR eax, ebx\npush eax\n";
+                    return "MOV eax, " + expr1.toAsm() + "\nMOV ebx, " + expr2.toAsm() + "\nXOR eax, ebx\npush eax\n";
                 case LSHIFT:
-                    return "MOV eax, "+ expr1.toAsm() +"\nMOV ecx, "+ expr2.toAsm() +"\nSHL eax, cl\npush eax\n";
+                    return "MOV eax, " + expr1.toAsm() + "\nMOV ecx, " + expr2.toAsm() + "\nSHL eax, cl\npush eax\n";
                 case RSHIFT:
-                    return "MOV eax, "+ expr1.toAsm() +"\nMOV ebx, "+ expr2.toAsm() +"\nSHR eax, cl\npush eax\n";
+                    return "MOV eax, " + expr1.toAsm() + "\nMOV ebx, " + expr2.toAsm() + "\nSHR eax, cl\npush eax\n";
             }
         }
         if (expr1.isTerminal() && !expr2.isTerminal()) {
             switch (operation) {
                 case ADD:
-                    return "MOV eax, "+ expr1.toAsm() +"\npop ebx\nADD eax, ebx\npush eax\n";
+                    return "MOV eax, " + expr1.toAsm() + "\npop ebx\nADD eax, ebx\npush eax\n";
                 case SUBTRACT:
-                    return "MOV eax, "+ expr1.toAsm() +"\npop ebx\nSUB eax, ebx\npush eax\n";
+                    return "MOV eax, " + expr1.toAsm() + "\npop ebx\nSUB eax, ebx\npush eax\n";
                 case MULTIPLY:
-                    return "MOV eax, "+ expr1.toAsm() +"\npop ebx\nMUL ebx\npush eax\n";
+                    return "MOV eax, " + expr1.toAsm() + "\npop ebx\nMUL ebx\npush eax\n";
                 case DIVIDE:
-                    return "MOV eax, "+ expr1.toAsm() +"\npop ebx\nXOR edx, edx\nDIV ebx\npush eax\n";
+                    return "MOV eax, " + expr1.toAsm() + "\npop ebx\nXOR edx, edx\nDIV ebx\npush eax\n";
                 case REMAINDER:
-                    return "MOV eax, "+ expr1.toAsm() +"\npop ebx\nXOR edx, edx\nDIV ebx\npush edx\n";
+                    return "MOV eax, " + expr1.toAsm() + "\npop ebx\nXOR edx, edx\nDIV ebx\npush edx\n";
                 case OR:
-                    return "MOV eax, "+ expr1.toAsm() +"\npop ebx\nOR  eax, ebx\npush eax\n";
+                    return "MOV eax, " + expr1.toAsm() + "\npop ebx\nOR  eax, ebx\npush eax\n";
                 case AND:
-                    return "MOV eax, "+ expr1.toAsm() +"\npop ebx\nAND eax, ebx\npush eax\n";
+                    return "MOV eax, " + expr1.toAsm() + "\npop ebx\nAND eax, ebx\npush eax\n";
                 case XOR:
-                    return "MOV eax, "+ expr1.toAsm() +"\npop ebx\nXOR eax, ebx\npush eax\n";
+                    return "MOV eax, " + expr1.toAsm() + "\npop ebx\nXOR eax, ebx\npush eax\n";
                 case LSHIFT:
-                    return "MOV eax, "+ expr1.toAsm() +"\npop ecx\nSHL eax, cl\npush eax\n";
+                    return "MOV eax, " + expr1.toAsm() + "\npop ecx\nSHL eax, cl\npush eax\n";
                 case RSHIFT:
-                    return "MOV eax, "+ expr1.toAsm() +"\npop ecx\nSHR eax, cl\npush eax\n";
+                    return "MOV eax, " + expr1.toAsm() + "\npop ecx\nSHR eax, cl\npush eax\n";
             }
         }
         if (!expr1.isTerminal() && expr2.isTerminal()) {
             switch (operation) {
                 case ADD:
-                    return "pop eax\nMOV ebx, "+ expr2.toAsm() +"\nADD eax, ebx\npush eax\n";
+                    return "pop eax\nMOV ebx, " + expr2.toAsm() + "\nADD eax, ebx\npush eax\n";
                 case SUBTRACT:
-                    return "pop eax\nMOV ebx, "+ expr2.toAsm() +"\nSUB eax, ebx\npush eax\n";
+                    return "pop eax\nMOV ebx, " + expr2.toAsm() + "\nSUB eax, ebx\npush eax\n";
                 case MULTIPLY:
-                    return "pop eax\nMOV ebx, "+ expr2.toAsm() +"\nMUL ebx\npush eax\n";
+                    return "pop eax\nMOV ebx, " + expr2.toAsm() + "\nMUL ebx\npush eax\n";
                 case DIVIDE:
-                    return "pop eax\nMOV ebx, "+ expr2.toAsm() +"\nXOR edx, edx\nDIV ebx\npush eax\n";
+                    return "pop eax\nMOV ebx, " + expr2.toAsm() + "\nXOR edx, edx\nDIV ebx\npush eax\n";
                 case REMAINDER:
-                    return "pop eax\nMOV ebx, "+ expr2.toAsm() +"\nXOR edx, edx\nDIV ebx\npush edx\n";
+                    return "pop eax\nMOV ebx, " + expr2.toAsm() + "\nXOR edx, edx\nDIV ebx\npush edx\n";
                 case OR:
-                    return "pop eax\nMOV ebx, "+ expr2.toAsm() +"\nOR  eax, ebx\npush eax\n";
+                    return "pop eax\nMOV ebx, " + expr2.toAsm() + "\nOR  eax, ebx\npush eax\n";
                 case AND:
-                    return "pop eax\nMOV ebx, "+ expr2.toAsm() +"\nAND eax, ebx\npush eax\n";
+                    return "pop eax\nMOV ebx, " + expr2.toAsm() + "\nAND eax, ebx\npush eax\n";
                 case XOR:
-                    return "pop eax\nMOV ebx, "+ expr2.toAsm() +"\nXOR eax, ebx\npush eax\n";
+                    return "pop eax\nMOV ebx, " + expr2.toAsm() + "\nXOR eax, ebx\npush eax\n";
                 case LSHIFT:
-                    return "pop eax\nMOV ecx, "+ expr2.toAsm() +"\nSHL eax, cl\npush eax\n";
+                    return "pop eax\nMOV ecx, " + expr2.toAsm() + "\nSHL eax, cl\npush eax\n";
                 case RSHIFT:
-                    return "pop eax\nMOV ebx, "+ expr2.toAsm() +"\nSHR eax, cl\npush eax\n";
+                    return "pop eax\nMOV ebx, " + expr2.toAsm() + "\nSHR eax, cl\npush eax\n";
             }
         }
         switch (operation) {
@@ -182,7 +182,7 @@ public class BinaryExpression implements Expression {
 
     @Override
     public String toString() {
-        return  "(" + expr1 + ")" + operation + "(" + expr2 + ")";
+        return "(" + expr1 + ")" + operation + "(" + expr2 + ")";
     }
 
     public enum Operator {

@@ -7,8 +7,6 @@ import parser.ast.DataType;
 import parser.ast.Variables;
 import parser.ast.expression.Expression;
 
-import javax.swing.plaf.nimbus.State;
-
 @AllArgsConstructor
 public class AssignmentStatement implements Statement {
 
@@ -24,7 +22,7 @@ public class AssignmentStatement implements Statement {
         DataType expType = expression.returnType();
         DataType varType = Variables.get(variable).getType();
         if (expType != varType)
-            throw new SemanticException("Variable '" + variable +"(" + Variables.get(variable).getType() + ")' does not match type " + expType);
+            throw new SemanticException("Variable '" + variable + "(" + Variables.get(variable).getType() + ")' does not match type " + expType);
     }
 
     @Override

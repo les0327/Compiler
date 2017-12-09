@@ -8,7 +8,8 @@ import parser.ast.Pointer;
 @AllArgsConstructor
 public class PointerExpression implements Expression {
 
-    @Getter private Pointer pointer;
+    @Getter
+    private Pointer pointer;
 
     @Override
     public DataType returnType() {

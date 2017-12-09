@@ -4,19 +4,17 @@ import exceptions.SemanticException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import parser.ast.DataType;
-import parser.ast.Variables;
 import parser.ast.expression.BoolExpression;
 import parser.ast.expression.Expression;
 
 @AllArgsConstructor
 public class IfStatement implements Statement {
 
+    private static int limit = 0;
     @Getter
     private Expression expression;
     @Getter
     private Statement ifStatement, elseStatement;
-
-    private static int limit = 0;
 
     @Override
     public void semanticAnalyse() {
@@ -48,20 +46,20 @@ public class IfStatement implements Statement {
     @Override
     public String toAsm() {
         if (elseStatement != null)
-        return expression.toAsm() +
-                "pop eax\n" +
-                "CMP eax, 0\n" +
-                "je @if" + limit +"\n"
-                + ifStatement.toAsm() +
-                "jmp @endIf" + limit + "\n" +
-                "@if" + limit + ":\n"
-                + elseStatement.toAsm() +
-                "@endIf" + limit++ + ":\n";
+            return expression.toAsm() +
+                    "pop eax\n" +
+                    "CMP eax, 0\n" +
+                    "je @if" + limit + "\n"
+                    + ifStatement.toAsm() +
+                    "jmp @endIf" + limit + "\n" +
+                    "@if" + limit + ":\n"
+                    + elseStatement.toAsm() +
+                    "@endIf" + limit++ + ":\n";
         else
             return expression.toAsm() +
                     "pop eax\n" +
                     "CMP eax, 0\n" +
-                    "je @endIf" + limit +"\n"
+                    "je @endIf" + limit + "\n"
                     + ifStatement.toAsm() +
                     "@endIf" + limit++ + ":\n";
     }

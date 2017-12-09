@@ -43,7 +43,7 @@ public class BlockStatement implements Statement {
 
     @Override
     public String toString() {
-        StringBuilder s  = new StringBuilder();
+        StringBuilder s = new StringBuilder();
         for (Statement st : statements)
             s.append(st.toString()).append("\n");
         return s.toString();

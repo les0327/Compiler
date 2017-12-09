@@ -16,17 +16,19 @@ public class NumberValue implements Value {
     public boolean isAssigned() {
         return true;
     }
-    @Override
-    public String getName() {
-        return value.toString();
-    }
-    @Override
-    public boolean isPointer() {
-        return false;
-    }
 
     @Override
     public void setAssigned(boolean value) {
 
+    }
+
+    @Override
+    public String getName() {
+        return value.toString();
+    }
+
+    @Override
+    public boolean isPointer() {
+        return false;
     }
 }

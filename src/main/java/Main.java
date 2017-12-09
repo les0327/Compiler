@@ -5,7 +5,6 @@ import parser.Token;
 import parser.ast.statement.Statement;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;

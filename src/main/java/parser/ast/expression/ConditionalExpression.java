@@ -8,12 +8,11 @@ import parser.ast.DataType;
 
 @AllArgsConstructor
 public class ConditionalExpression implements Expression {
+    private static int limit = 0;
     @Getter
     private Operator operation;
     @Getter
     private Expression expr1, expr2;
-
-    private static int limit = 0;
 
     @Override
     public DataType returnType() {
@@ -174,7 +173,7 @@ public class ConditionalExpression implements Expression {
             switch (operation) {
                 case EQUALS:
                     return "MOV eax, " + expr1.toAsm() +
-                            "\npop ebx"+
+                            "\npop ebx" +
                             "\nCMP eax, ebx" +
                             "\njne @C" + limit +
                             "\npush 1" +
@@ -184,7 +183,7 @@ public class ConditionalExpression implements Expression {
                             "\n@endC" + limit++ + ":\n";
                 case NOT_EQUALS:
                     return "MOV eax, " + expr1.toAsm() +
-                            "\npop ebx"+
+                            "\npop ebx" +
                             "\nCMP eax, ebx" +
                             "\njne @C" + limit +
                             "\npush 0" +
@@ -194,17 +193,17 @@ public class ConditionalExpression implements Expression {
                             "\n@endC" + limit++ + ":\n";
                 case AND:
                     return "MOV eax, " + expr1.toAsm() +
-                            "\npop ebx"+
+                            "\npop ebx" +
                             "\nAND eax, ebx" +
                             "\npush eax\n";
                 case OR:
                     return "MOV eax, " + expr1.toAsm() +
-                            "\npop ebx"+
+                            "\npop ebx" +
                             "\nOR  eax, ebx" +
                             "\npush eax\n";
                 case LTEQ:
                     return "MOV eax, " + expr1.toAsm() +
-                            "\npop ebx"+
+                            "\npop ebx" +
                             "\nCMP eax, ebx" +
                             "\njle @C" + limit +
                             "\npush 0" +
@@ -214,7 +213,7 @@ public class ConditionalExpression implements Expression {
                             "\n@endC" + limit++ + ":\n";
                 case LT:
                     return "MOV eax, " + expr1.toAsm() +
-                            "\npop ebx"+
+                            "\npop ebx" +
                             "\nCMP eax, ebx" +
                             "\njl @C" + limit +
                             "\npush 0" +
@@ -224,7 +223,7 @@ public class ConditionalExpression implements Expression {
                             "\n@endC" + limit++ + ":\n";
                 case GTEQ:
                     return "MOV eax, " + expr1.toAsm() +
-                            "\npop ebx"+
+                            "\npop ebx" +
                             "\nCMP eax, ebx" +
                             "\njge @C" + limit +
                             "\npush 0" +
@@ -234,7 +233,7 @@ public class ConditionalExpression implements Expression {
                             "\n@endC" + limit++ + ":\n";
                 case GT:
                     return "MOV eax, " + expr1.toAsm() +
-                            "\npop ebx"+
+                            "\npop ebx" +
                             "\nCMP eax, ebx" +
                             "\njg @C" + limit +
                             "\npush 0" +

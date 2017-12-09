@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import parser.ast.DataType;
 import parser.ast.Value;
-import parser.ast.Variable;
 import parser.ast.Variables;
 import parser.ast.expression.Expression;
 
@@ -23,7 +22,7 @@ public class DefineStatement implements Statement {
         DataType expType = expression.returnType();
         DataType varType = Variables.get(variable.getName()).getType();
         if (expType != varType)
-            throw new SemanticException("Variable '" + variable +"(" + Variables.get(variable.getName()).getType() + ")' does not match type " + expType);
+            throw new SemanticException("Variable '" + variable + "(" + Variables.get(variable.getName()).getType() + ")' does not match type " + expType);
     }
 
     @Override
@@ -46,6 +45,6 @@ public class DefineStatement implements Statement {
 
     @Override
     public String toString() {
-        return (variable.getType() == DataType.Int ? "int " : "bool ") + (forPointer? "*":"") + variable.getName() + "=" + expression + ";";
+        return (variable.getType() == DataType.Int ? "int " : "bool ") + (forPointer ? "*" : "") + variable.getName() + "=" + expression + ";";
     }
 }

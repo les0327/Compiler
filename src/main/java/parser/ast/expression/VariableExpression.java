@@ -8,7 +8,8 @@ import parser.ast.Variable;
 @AllArgsConstructor
 public class VariableExpression implements Expression {
 
-    @Getter private Variable variable;
+    @Getter
+    private Variable variable;
 
     @Override
     public DataType returnType() {

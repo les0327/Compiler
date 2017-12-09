@@ -334,11 +334,11 @@ public final class Parser {
     private Expression unary() {
         if (match(TokenType.AND)) {
             String address = consume(TokenType.VAR).getText();
-            return new AddressExpression((Variable)Variables.get(address));
+            return new AddressExpression((Variable) Variables.get(address));
         }
         if (match(TokenType.MUL)) {
             String pointer = consume(TokenType.VAR).getText();
-            return new PointerExpression((Pointer)Variables.get(pointer));
+            return new PointerExpression((Pointer) Variables.get(pointer));
         }
         if (match(TokenType.MINUS)) {
             return new UnaryExpression(UnaryExpression.Operator.NEGATE, primary());
@@ -365,7 +365,7 @@ public final class Parser {
             return new NumberExpression(new NumberValue(Integer.parseInt(current.getText()), DataType.Int));
         }
         if (match(TokenType.VAR)) {
-            return new VariableExpression((Variable)Variables.get(current.getText()));
+            return new VariableExpression((Variable) Variables.get(current.getText()));
         }
         if (match(TokenType.LEFT_ROUND_BRACKET)) {
             Expression result = expression();

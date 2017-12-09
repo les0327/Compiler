@@ -23,12 +23,12 @@ public class BoolValue implements Value {
     }
 
     @Override
-    public boolean isPointer() {
-        return false;
+    public void setAssigned(boolean value) {
+
     }
 
     @Override
-    public void setAssigned(boolean value) {
-
+    public boolean isPointer() {
+        return false;
     }
 }

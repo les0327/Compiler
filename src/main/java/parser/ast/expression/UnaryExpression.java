@@ -49,10 +49,10 @@ public class UnaryExpression implements Expression {
     @Override
     public String toAsm() {
         if (expr instanceof BoolExpression) {
-                    return "\tMOV eax, " + expr.toAsm() + "\nXOR eax, 01h\n push eax\n";
+            return "\tMOV eax, " + expr.toAsm() + "\nXOR eax, 01h\n push eax\n";
         }
         if (expr instanceof VariableExpression || expr instanceof NumberExpression || expr instanceof Pointer) {
-                    return "MOV eax, " + expr.toAsm() + "\nXOR eax, ffffffffh\nADD eax, 01h\npush eax\n";
+            return "MOV eax, " + expr.toAsm() + "\nXOR eax, ffffffffh\nADD eax, 01h\npush eax\n";
         } else {
             if (operation == Operator.NOT)
                 return "pop eax\nXOR eax, ffffffffh\npush eax\n";
