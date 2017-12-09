@@ -10,7 +10,7 @@ import java.util.Map;
 
 public final class Lexer {
 
-    private static final String OPERATOR_CHARS = "+-*/%(){}=<>!&|^~:;";
+    private static final String OPERATOR_CHARS = "+-*/%(){}=<>!&|^~:;?";
     private static final Map<String, TokenType> OPERATORS;
     private static final Map<String, TokenType> KEYWORDS;
 
@@ -31,6 +31,7 @@ public final class Lexer {
         OPERATORS.put("^", TokenType.XOR);
         OPERATORS.put(":", TokenType.COLON);
         OPERATORS.put(";", TokenType.SEMI_COLON);
+        OPERATORS.put("?", TokenType.QUESTION);
 
         OPERATORS.put("!", TokenType.NOT);
         OPERATORS.put("&", TokenType.AND);

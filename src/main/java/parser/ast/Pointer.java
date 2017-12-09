@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @AllArgsConstructor
-public class Variable implements Value {
+public class Pointer implements Value {
     @Getter
     private String name;
     @Getter

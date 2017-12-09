@@ -3,16 +3,16 @@ package parser.ast.expression;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import parser.ast.DataType;
-import parser.ast.Variable;
+import parser.ast.Pointer;
 
 @AllArgsConstructor
-public class VariableExpression implements Expression {
+public class PointerExpression implements Expression {
 
-    @Getter private Variable variable;
+    @Getter private Pointer pointer;
 
     @Override
     public DataType returnType() {
-        return variable.getType();
+        return pointer.getType();
     }
 
     @Override
@@ -27,11 +27,11 @@ public class VariableExpression implements Expression {
 
     @Override
     public String toAsm() {
-        return toString();
+        return "[" + pointer.getName() + "]";
     }
 
     @Override
     public String toString() {
-        return variable.getName();
+        return "*" + pointer.getName();
     }
 }

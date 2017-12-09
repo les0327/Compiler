@@ -6,13 +6,13 @@ import parser.ast.DataType;
 import parser.ast.Variable;
 
 @AllArgsConstructor
-public class VariableExpression implements Expression {
-
-    @Getter private Variable variable;
+public class AddressExpression implements Expression{
+    @Getter
+    private Variable address;
 
     @Override
     public DataType returnType() {
-        return variable.getType();
+        return address.getType();
     }
 
     @Override
@@ -27,11 +27,11 @@ public class VariableExpression implements Expression {
 
     @Override
     public String toAsm() {
-        return toString();
+        return "offset " + address.getName();
     }
 
     @Override
     public String toString() {
-        return variable.getName();
+        return "&" + address.getName();
     }
 }

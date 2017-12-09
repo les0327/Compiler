@@ -8,12 +8,16 @@ import java.util.Map;
 
 public class Variables {
 
-    private static Map<String, Variable> variables = new HashMap<>();
+    private static Map<String, Value> variables = new HashMap<>();
 
-    public static Variable define(String name, DataType type) {
+    public static Value define(String name, DataType type, boolean pointer) {
         if (isDefined(name))
             throw new SemanticException("Variable '" + name + "' has been already defined");
-        variables.put(name, new Variable(name, type, false));
+        if (pointer)
+            variables.put(name, new Pointer(name, type, false, true));
+        else
+            variables.put(name, new Variable(name, type, false, false));
+
         return variables.get(name);
     }
 
@@ -21,15 +25,15 @@ public class Variables {
         variables.get(name).setAssigned(true);
     }
 
-    public static boolean isDefined(String name) {
+    private static boolean isDefined(String name) {
         return variables.containsKey(name);
     }
 
-    public static boolean isAssigned(String name) {
+    private static boolean isAssigned(String name) {
         return variables.get(name).isAssigned();
     }
 
-    public static Variable get(String name) {
+    public static Value get(String name) {
         if (!isDefined(name)) throw new SemanticException("Variable \"" + name + "\" is not defined");
         if (!isAssigned(name)) throw new SemanticException("Variable \"" + name + "\" is not assigned");
         return variables.get(name);
