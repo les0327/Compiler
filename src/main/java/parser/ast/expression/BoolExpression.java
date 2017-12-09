@@ -2,22 +2,25 @@ package parser.ast.expression;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
+import parser.ast.BoolValue;
 import parser.ast.DataType;
-import parser.ast.Variable;
 
 @AllArgsConstructor
-public class VariableExpression implements Expression {
+public class BoolExpression implements Expression {
 
-    @Getter private Variable variable;
+    @Getter
+    @Setter
+    private BoolValue value;
 
     @Override
     public DataType returnType() {
-        return variable.getType();
+        return DataType.Bool;
     }
 
     @Override
     public boolean canOptimize() {
-        return false;
+        return true;
     }
 
     @Override
@@ -27,11 +30,11 @@ public class VariableExpression implements Expression {
 
     @Override
     public String toAsm() {
-        return toString();
+        return value.isValue() ? "1" : "0";
     }
 
     @Override
     public String toString() {
-        return variable.getName();
+        return value.isValue() + "";
     }
 }

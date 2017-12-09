@@ -22,11 +22,30 @@ public class BlockStatement implements Statement {
 
     @Override
     public void semanticAnalyse() {
+        statements.forEach(Statement::semanticAnalyse);
+    }
 
+    @Override
+    public Statement optimize() {
+        for (int i = 0; i < statements.size(); i++) {
+            Statement s = statements.get(i);
+            statements.set(i, s.optimize());
+        }
+        return this;
     }
 
     @Override
     public String toAsm() {
-        return null;
+        StringBuilder sb = new StringBuilder();
+        statements.forEach(s -> sb.append(s.toAsm()));
+        return sb.toString();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder s  = new StringBuilder();
+        for (Statement st : statements)
+            s.append(st.toString()).append("\n");
+        return s.toString();
     }
 }

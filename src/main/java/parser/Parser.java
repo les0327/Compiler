@@ -1,8 +1,7 @@
 package parser;
 
 import exceptions.SyntaxException;
-import parser.ast.DataType;
-import parser.ast.Variables;
+import parser.ast.*;
 import parser.ast.expression.*;
 import parser.ast.statement.*;
 
@@ -61,10 +60,19 @@ public final class Parser {
     }
 
     private Statement assignmentStatement() {
-        if (lookMatch(0, TokenType.VAR) && lookMatch(1, TokenType.ASSIGN)) {
-            final String variable = consume(TokenType.VAR).getText();
+        if (lookMatch(0, TokenType.MUL) && lookMatch(1, TokenType.VAR) && lookMatch(2, TokenType.ASSIGN)) {
+            consume(TokenType.MUL);
+            String variable = consume(TokenType.VAR).getText();
             consume(TokenType.ASSIGN);
-            Statement s = new AssignmentStatement(variable, expression());
+            Statement s = new AssignmentStatement(variable, expression(), true);
+            Variables.assign(variable);
+            match(TokenType.SEMI_COLON);
+            return s;
+        }
+        if (lookMatch(0, TokenType.VAR) && lookMatch(1, TokenType.ASSIGN)) {
+            String variable = consume(TokenType.VAR).getText();
+            consume(TokenType.ASSIGN);
+            Statement s = new AssignmentStatement(variable, expression(), false);
             Variables.assign(variable);
             match(TokenType.SEMI_COLON);
             return s;
@@ -73,16 +81,34 @@ public final class Parser {
     }
 
     private Statement defineIntStatement() {
+
+        if (lookMatch(0, TokenType.MUL) && lookMatch(1, TokenType.VAR) && lookMatch(2, TokenType.SEMI_COLON)) {
+            consume(TokenType.MUL);
+            String variable = consume(TokenType.VAR).getText();
+            consume(TokenType.SEMI_COLON);
+            return new DefineStatement(Variables.define(variable, DataType.Int, true), null, true);
+        }
+
+        if (lookMatch(0, TokenType.MUL) && lookMatch(1, TokenType.VAR) && lookMatch(2, TokenType.ASSIGN)) {
+            consume(TokenType.MUL);
+            String variable = consume(TokenType.VAR).getText();
+            consume(TokenType.ASSIGN);
+            Statement s = new DefineStatement(Variables.define(variable, DataType.Int, true), expression(), true);
+            Variables.assign(variable);
+            match(TokenType.SEMI_COLON);
+            return s;
+        }
+
         if (lookMatch(0, TokenType.VAR) && lookMatch(1, TokenType.SEMI_COLON)) {
             String variable = consume(TokenType.VAR).getText();
             consume(TokenType.SEMI_COLON);
-            return new DefineStatement(Variables.define(variable, DataType.Int), null);
+            return new DefineStatement(Variables.define(variable, DataType.Int, false), null, false);
         }
 
         if (lookMatch(0, TokenType.VAR) && lookMatch(1, TokenType.ASSIGN)) {
             String variable = consume(TokenType.VAR).getText();
             consume(TokenType.ASSIGN);
-            Statement s = new DefineStatement(Variables.define(variable, DataType.Int), expression());
+            Statement s = new DefineStatement(Variables.define(variable, DataType.Int, false), expression(), false);
             Variables.assign(variable);
             match(TokenType.SEMI_COLON);
             return s;
@@ -94,12 +120,13 @@ public final class Parser {
         if (lookMatch(0, TokenType.VAR) && lookMatch(1, TokenType.SEMI_COLON)) {
             String variable = consume(TokenType.VAR).getText();
             consume(TokenType.SEMI_COLON);
-            return new DefineStatement(Variables.define(variable, DataType.Bool), null);
+            return new DefineStatement(Variables.define(variable, DataType.Bool, false), null, false);
         }
         if (lookMatch(0, TokenType.VAR) && lookMatch(1, TokenType.ASSIGN)) {
             String variable = consume(TokenType.VAR).getText();
             consume(TokenType.ASSIGN);
-            Statement s = new DefineStatement(Variables.define(variable, DataType.Bool), expression());
+            Statement s = new DefineStatement(Variables.define(variable, DataType.Bool, false), expression(), false);
+            Variables.assign(variable);
             match(TokenType.SEMI_COLON);
             return s;
         }
@@ -130,7 +157,7 @@ public final class Parser {
             consume(TokenType.COLON);
             final Expression falseExpr = expression();
             Expression e = new TernaryExpression(result, trueExpr, falseExpr);
-            match(TokenType.SEMI_COLON);
+            consume(TokenType.SEMI_COLON);
             return e;
         }
 
@@ -305,6 +332,14 @@ public final class Parser {
     }
 
     private Expression unary() {
+        if (match(TokenType.AND)) {
+            String address = consume(TokenType.VAR).getText();
+            return new AddressExpression((Variable)Variables.get(address));
+        }
+        if (match(TokenType.MUL)) {
+            String pointer = consume(TokenType.VAR).getText();
+            return new PointerExpression((Pointer)Variables.get(pointer));
+        }
         if (match(TokenType.MINUS)) {
             return new UnaryExpression(UnaryExpression.Operator.NEGATE, primary());
         }
@@ -319,11 +354,18 @@ public final class Parser {
 
     private Expression primary() {
         final Token current = get(0);
+
+        if (match(TokenType.TRUE)) {
+            return new BoolExpression(new BoolValue(true, DataType.Bool));
+        }
+        if (match(TokenType.FALSE)) {
+            return new BoolExpression(new BoolValue(false, DataType.Bool));
+        }
         if (match(TokenType.NUMBER)) {
-            return new NumberExpression(Integer.parseInt(current.getText()));
+            return new NumberExpression(new NumberValue(Integer.parseInt(current.getText()), DataType.Int));
         }
         if (match(TokenType.VAR)) {
-            return new VariableExpression(Variables.get(current.getText()));
+            return new VariableExpression((Variable)Variables.get(current.getText()));
         }
         if (match(TokenType.LEFT_ROUND_BRACKET)) {
             Expression result = expression();
