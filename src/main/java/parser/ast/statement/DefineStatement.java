@@ -19,16 +19,19 @@ public class DefineStatement implements Statement {
 
     @Override
     public void semanticAnalyse() {
-        DataType expType = expression.returnType();
-        DataType varType = Variables.get(variable.getName()).getType();
-        if (expType != varType)
-            throw new SemanticException("Variable '" + variable + "(" + Variables.get(variable.getName()).getType() + ")' does not match type " + expType);
+        if (expression != null) {
+            DataType expType = expression.returnType();
+            DataType varType = Variables.get(variable.getName()).getType();
+            if (expType != varType)
+                throw new SemanticException("Variable '" + variable + "(" + Variables.get(variable.getName()).getType() + ")' does not match type " + expType);
+        }
     }
 
     @Override
     public Statement optimize() {
-        if (expression.canOptimize())
-            expression = expression.optimize();
+        if (expression != null)
+            if (expression.canOptimize())
+                expression = expression.optimize();
         return this;
     }
 

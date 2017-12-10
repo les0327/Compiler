@@ -41,10 +41,10 @@ public final class Parser {
             return ifElse();
         }
         if (match(TokenType.INT)) {
-            return defineIntStatement();
+            return defineInt();
         }
         if (match(TokenType.BOOL)) {
-            return defineBoolStatement();
+            return defineBool();
         }
 
         return assignmentStatement();
@@ -80,7 +80,7 @@ public final class Parser {
         throw new SyntaxException(get(0).getRow(), get(0).getCol(), "Unknown statement: " + get(0));
     }
 
-    private Statement defineIntStatement() {
+    private Statement defineInt() {
 
         if (lookMatch(0, TokenType.MUL) && lookMatch(1, TokenType.VAR) && lookMatch(2, TokenType.SEMI_COLON)) {
             consume(TokenType.MUL);
@@ -116,7 +116,7 @@ public final class Parser {
         throw new SyntaxException(get(0).getRow(), get(0).getCol(), "Unknown statement: " + get(0));
     }
 
-    private Statement defineBoolStatement() {
+    private Statement defineBool() {
         if (lookMatch(0, TokenType.VAR) && lookMatch(1, TokenType.SEMI_COLON)) {
             String variable = consume(TokenType.VAR).getText();
             consume(TokenType.SEMI_COLON);

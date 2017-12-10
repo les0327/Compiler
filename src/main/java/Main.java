@@ -20,10 +20,8 @@ public class Main {
             Statement s = Parser.parse(tokens);
             System.out.println("Syntax analyse   -> ok");
             s.semanticAnalyse();
-//        System.out.println(s);
             System.out.println("Semantic analyse -> ok");
             s.optimize();
-//        System.out.println(s);
             System.out.println("Optimization     -> ok");
             Path output = Paths.get(args[1]);
             Files.deleteIfExists(output);
@@ -40,7 +38,7 @@ public class Main {
 
             out += String.join("\n", lines);
 
-            out += "\nret\n" +
+            out += "\n\tret\n" +
                     "main endp\n";
             Files.write(Paths.get(args[1]), out.getBytes());
             System.out.println("Generate code    -> ok");

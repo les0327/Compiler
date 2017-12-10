@@ -172,7 +172,7 @@ public class ConditionalExpression implements Expression {
         if (expr1.isTerminal() && !expr2.isTerminal()) {
             switch (operation) {
                 case EQUALS:
-                    return "MOV eax, " + expr1.toAsm() +
+                    return  expr2.toAsm() + "MOV eax, " + expr1.toAsm() +
                             "\npop ebx" +
                             "\nCMP eax, ebx" +
                             "\njne @C" + limit +
@@ -182,7 +182,7 @@ public class ConditionalExpression implements Expression {
                             "\npush 0" +
                             "\n@endC" + limit++ + ":\n";
                 case NOT_EQUALS:
-                    return "MOV eax, " + expr1.toAsm() +
+                    return expr2.toAsm() + "MOV eax, " + expr1.toAsm() +
                             "\npop ebx" +
                             "\nCMP eax, ebx" +
                             "\njne @C" + limit +
@@ -192,17 +192,17 @@ public class ConditionalExpression implements Expression {
                             "\npush 1" +
                             "\n@endC" + limit++ + ":\n";
                 case AND:
-                    return "MOV eax, " + expr1.toAsm() +
+                    return expr2.toAsm() + "MOV eax, " + expr1.toAsm() +
                             "\npop ebx" +
                             "\nAND eax, ebx" +
                             "\npush eax\n";
                 case OR:
-                    return "MOV eax, " + expr1.toAsm() +
+                    return expr2.toAsm() + "MOV eax, " + expr1.toAsm() +
                             "\npop ebx" +
                             "\nOR  eax, ebx" +
                             "\npush eax\n";
                 case LTEQ:
-                    return "MOV eax, " + expr1.toAsm() +
+                    return expr2.toAsm() + "MOV eax, " + expr1.toAsm() +
                             "\npop ebx" +
                             "\nCMP eax, ebx" +
                             "\njle @C" + limit +
@@ -212,7 +212,7 @@ public class ConditionalExpression implements Expression {
                             "\npush 1" +
                             "\n@endC" + limit++ + ":\n";
                 case LT:
-                    return "MOV eax, " + expr1.toAsm() +
+                    return expr2.toAsm() + "MOV eax, " + expr1.toAsm() +
                             "\npop ebx" +
                             "\nCMP eax, ebx" +
                             "\njl @C" + limit +
@@ -222,7 +222,7 @@ public class ConditionalExpression implements Expression {
                             "\npush 1" +
                             "\n@endC" + limit++ + ":\n";
                 case GTEQ:
-                    return "MOV eax, " + expr1.toAsm() +
+                    return expr2.toAsm() + "MOV eax, " + expr1.toAsm() +
                             "\npop ebx" +
                             "\nCMP eax, ebx" +
                             "\njge @C" + limit +
@@ -232,7 +232,7 @@ public class ConditionalExpression implements Expression {
                             "\npush 1" +
                             "\n@endC" + limit++ + ":\n";
                 case GT:
-                    return "MOV eax, " + expr1.toAsm() +
+                    return expr2.toAsm() + "MOV eax, " + expr1.toAsm() +
                             "\npop ebx" +
                             "\nCMP eax, ebx" +
                             "\njg @C" + limit +
@@ -246,7 +246,7 @@ public class ConditionalExpression implements Expression {
         if (!expr1.isTerminal() && expr2.isTerminal()) {
             switch (operation) {
                 case EQUALS:
-                    return "pop eax" +
+                    return expr1.toAsm() + "pop eax" +
                             "\nMOV ebx, " + expr2.toAsm() +
                             "\nCMP eax, ebx" +
                             "\njne @C" + limit +
@@ -256,7 +256,7 @@ public class ConditionalExpression implements Expression {
                             "\npush 0" +
                             "\n@endC" + limit++ + ":\n";
                 case NOT_EQUALS:
-                    return "pop eax" +
+                    return expr1.toAsm() + "pop eax" +
                             "\nMOV ebx, " + expr2.toAsm() +
                             "\nCMP eax, ebx" +
                             "\njne @C" + limit +
@@ -266,17 +266,17 @@ public class ConditionalExpression implements Expression {
                             "\npush 1" +
                             "\n@endC" + limit++ + ":\n";
                 case AND:
-                    return "pop eax" +
+                    return expr1.toAsm() + "pop eax" +
                             "\nMOV ebx, " + expr2.toAsm() +
                             "\nAND eax, ebx" +
                             "\npush eax\n";
                 case OR:
-                    return "pop eax" +
+                    return expr1.toAsm() + "pop eax" +
                             "\nMOV ebx, " + expr2.toAsm() +
                             "\nOR  eax, ebx" +
                             "\npush eax\n";
                 case LTEQ:
-                    return "pop eax" +
+                    return expr1.toAsm() + "pop eax" +
                             "\nMOV ebx, " + expr2.toAsm() +
                             "\nCMP eax, ebx" +
                             "\njle @C" + limit +
@@ -286,7 +286,7 @@ public class ConditionalExpression implements Expression {
                             "\npush 1" +
                             "\n@endC" + limit++ + ":\n";
                 case LT:
-                    return "pop eax" +
+                    return expr1.toAsm() + "pop eax" +
                             "\nMOV ebx, " + expr2.toAsm() +
                             "\nCMP eax, ebx" +
                             "\njl @C" + limit +
@@ -296,7 +296,7 @@ public class ConditionalExpression implements Expression {
                             "\npush 1" +
                             "\n@endC" + limit++ + ":\n";
                 case GTEQ:
-                    return "pop eax" +
+                    return expr1.toAsm() + "pop eax" +
                             "\nMOV ebx, " + expr2.toAsm() +
                             "\nCMP eax, ebx" +
                             "\njge @C" + limit +
@@ -306,7 +306,7 @@ public class ConditionalExpression implements Expression {
                             "\npush 1" +
                             "\n@endC" + limit++ + ":\n";
                 case GT:
-                    return "pop eax" +
+                    return expr1.toAsm() + "pop eax" +
                             "\nMOV ebx, " + expr2.toAsm() +
                             "\nCMP eax, ebx" +
                             "\njg @C" + limit +
@@ -319,7 +319,8 @@ public class ConditionalExpression implements Expression {
         }
         switch (operation) {
             case EQUALS:
-                return "pop ebx" +
+                return expr1.toAsm() + expr2.toAsm() +
+                        "pop ebx" +
                         "\npop eax" +
                         "\nCMP eax, ebx" +
                         "\njne @C" + limit +
@@ -329,7 +330,8 @@ public class ConditionalExpression implements Expression {
                         "\npush 0" +
                         "\n@endC" + limit++ + ":\n";
             case NOT_EQUALS:
-                return "pop ebx" +
+                return expr1.toAsm() + expr2.toAsm() +
+                        "pop ebx" +
                         "\npop eax" +
                         "\nCMP eax, ebx" +
                         "\njne @C" + limit +
@@ -339,17 +341,20 @@ public class ConditionalExpression implements Expression {
                         "\npush 1" +
                         "\n@endC" + limit++ + ":\n";
             case AND:
-                return "pop ebx" +
+                return expr1.toAsm() + expr2.toAsm() +
+                        "pop ebx" +
                         "\npop eax" +
                         "\nAND eax, ebx" +
                         "\npush eax\n";
             case OR:
-                return "pop ebx" +
+                return expr1.toAsm() + expr2.toAsm() +
+                        "pop ebx" +
                         "\npop eax" +
                         "\nOR  eax, ebx" +
                         "\npush eax\n";
             case LTEQ:
-                return "pop ebx" +
+                return expr1.toAsm() + expr2.toAsm() +
+                        "pop ebx" +
                         "\npop eax" +
                         "\nCMP eax, ebx" +
                         "\njle @C" + limit +
@@ -359,7 +364,8 @@ public class ConditionalExpression implements Expression {
                         "\npush 1" +
                         "\n@endC" + limit++ + ":\n";
             case LT:
-                return "pop ebx" +
+                return expr1.toAsm() + expr2.toAsm() +
+                        "pop ebx" +
                         "\npop eax" +
                         "\nCMP eax, ebx" +
                         "\njl @C" + limit +
@@ -369,7 +375,8 @@ public class ConditionalExpression implements Expression {
                         "\npush 1" +
                         "\n@endC" + limit++ + ":\n";
             case GTEQ:
-                return "pop eax" +
+                return expr1.toAsm() + expr2.toAsm() +
+                        "pop eax" +
                         "\nMOV ebx, " + expr2.toAsm() +
                         "\nCMP eax, ebx" +
                         "\njge @C" + limit +
@@ -379,7 +386,8 @@ public class ConditionalExpression implements Expression {
                         "\npush 1" +
                         "\n@endC" + limit++ + ":\n";
             case GT:
-                return "pop ebx" +
+                return expr1.toAsm() + expr2.toAsm() +
+                        "pop ebx" +
                         "\npop eax" +
                         "\nCMP eax, ebx" +
                         "\njg @C" + limit +

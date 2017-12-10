@@ -41,20 +41,6 @@ public final class Lexer {
         OPERATORS.put("!=", TokenType.NOT_EQUALS);
         OPERATORS.put("<=", TokenType.LESS_EQUALS);
         OPERATORS.put(">=", TokenType.MORE_EQUALS);
-
-        OPERATORS.put("+=", TokenType.PLUS_EQUALS);
-        OPERATORS.put("-=", TokenType.MINUS_EQUALS);
-        OPERATORS.put("*=", TokenType.MUL_EQUALS);
-        OPERATORS.put("/=", TokenType.DIV_EQUALS);
-        OPERATORS.put("%=", TokenType.PERCENT_EQUALS);
-        OPERATORS.put("&=", TokenType.END_EQUALS);
-        OPERATORS.put("^=", TokenType.XOR_EQUALS);
-        OPERATORS.put("|=", TokenType.OR_EQUALS);
-
-        OPERATORS.put("++", TokenType.INCREMENT);
-        OPERATORS.put("--", TokenType.DECREMENT);
-
-
         OPERATORS.put("&&", TokenType.AND_LOGICAL);
         OPERATORS.put("||", TokenType.OR_LOGICAL);
 
@@ -66,12 +52,8 @@ public final class Lexer {
         KEYWORDS = new HashMap<>();
         KEYWORDS.put("if", TokenType.IF);
         KEYWORDS.put("else", TokenType.ELSE);
-        KEYWORDS.put("break", TokenType.BREAK);
-        KEYWORDS.put("case", TokenType.CASE);
-        KEYWORDS.put("switch", TokenType.SWITCH);
         KEYWORDS.put("int", TokenType.INT);
         KEYWORDS.put("bool", TokenType.BOOL);
-        KEYWORDS.put("default", TokenType.DEFAULT);
         KEYWORDS.put("true", TokenType.TRUE);
         KEYWORDS.put("false", TokenType.FALSE);
     }
@@ -86,7 +68,6 @@ public final class Lexer {
     private Lexer(String input) {
         this.input = input;
         length = input.length();
-
         tokens = new ArrayList<>();
         buffer = new StringBuilder();
         row = col = 1;
@@ -103,9 +84,10 @@ public final class Lexer {
             else if (isIdentifierStart(current)) tokenizeWord();
             else if (OPERATOR_CHARS.indexOf(current) != -1) {
                 tokenizeOperator();
-            } else {
-                // whitespaces
+            } else if (" \n\r\t".contains(current + "")) {
                 next();
+            } else {
+                throw error("Unrecognized symbol '" + current + "'");
             }
         }
         return tokens;

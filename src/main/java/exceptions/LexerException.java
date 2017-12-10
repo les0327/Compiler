@@ -1,7 +1,7 @@
 package exceptions;
 
 
-public final class LexerException extends RuntimeException {
+public class LexerException extends RuntimeException {
 
     public LexerException(String message) {
         super(message);

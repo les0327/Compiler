@@ -22,6 +22,7 @@ public class Variables {
     }
 
     public static void assign(String name) {
+        if (!isDefined(name)) throw new SemanticException("Variable \"" + name + "\" is not defined");
         variables.get(name).setAssigned(true);
     }
 

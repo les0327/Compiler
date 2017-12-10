@@ -37,18 +37,6 @@ public enum TokenType {
     MORE, // >
     MORE_EQUALS, // >=
 
-    PLUS_EQUALS, // +=
-    MINUS_EQUALS, // -=
-    MUL_EQUALS, // *=
-    DIV_EQUALS, // /=
-    PERCENT_EQUALS, // %=
-    END_EQUALS, // &=
-    XOR_EQUALS, // ^=
-    OR_EQUALS, // |=
-
-    INCREMENT, // ++
-    DECREMENT, // --
-
     LEFT_SHIFT, // <<
     RIGHT_SHIFT, // >>
 
